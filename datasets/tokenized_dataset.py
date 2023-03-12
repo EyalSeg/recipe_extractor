@@ -18,7 +18,7 @@ def create_tokenizer(
     tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 
     closure: Tokenizer_T = \
-        lambda text: tokenizer(text, padding=padding, max_length=max_length, return_tensors="pt")
+        lambda text: tokenizer(text, padding=padding, max_length=max_length, return_tensors="pt", truncation=True)
 
     return closure
 

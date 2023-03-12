@@ -30,12 +30,10 @@ class TokenizedDataset(torch.utils.data.Dataset):
                  tokenizer: Tokenizer_T = create_tokenizer(),
                  use_tqdm=True):
 
-        if use_tqdm:
-            input_texts = tqdm(input_texts, desc="Tokenizing inputs")
         self._X: List[BatchEncoding] = [tokenizer(x) for x in input_texts]
 
         if isinstance(output_labels, pd.DataFrame):
-            output_labels = torch.tensor(output_labels.values).to(torch.float)
+            output_labels = torch.tensor(output_labels.astype(float).values).to(torch.float)
 
         self._y: torch.Tensor = output_labels
 

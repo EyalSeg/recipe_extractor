@@ -8,3 +8,5 @@ nebulgym
 sentencepiece
 sacremoses
 transformers
+
+pytorch-lightning

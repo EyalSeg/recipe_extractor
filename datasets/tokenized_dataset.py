@@ -6,7 +6,7 @@ import torch
 import pandas as pd
 
 from tqdm import tqdm
-from transformers import BertTokenizer
+from transformers import BertTokenizer, BertModel
 from transformers.tokenization_utils_base import TextInput, BatchEncoding
 
 Tokenizer_T = Callable[[TextInput], BatchEncoding]
@@ -28,7 +28,7 @@ class TokenizedDataset(torch.utils.data.Dataset):
                  input_texts: List[str],
                  output_labels: Union[pd.DataFrame, torch.Tensor],
                  tokenizer: Tokenizer_T = create_tokenizer(),
-                 use_tqdm=True):
+                 ):
 
         self._X: List[BatchEncoding] = [tokenizer(x) for x in input_texts]
 
@@ -61,7 +61,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     df = pd.read_csv(args.input_csv)
-    ds = TokenizedDataset(df["text"], df[["ingredients", "instructions"]])
+    ds = TokenizedDataset(tqdm(df["text"], desc="Tokenizing inputs"), df[["ingredients", "instructions", "filler"]])
+
+    # Sanity test
+    X, y = ds[0]
+    bert = BertModel.from_pretrained('bert-base-cased')
+    output = bert(**X)
+    assert output.pooler_output.shape == torch.Size([1, 768])
 
     torch.save(ds, args.output_pkl)
 

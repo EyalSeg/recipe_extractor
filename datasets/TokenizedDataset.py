@@ -1,8 +1,11 @@
+import argparse
+
 from typing import List, Union, Callable
 
 import torch
 import pandas as pd
 
+from tqdm import tqdm
 from transformers import BertTokenizer
 from transformers.tokenization_utils_base import TextInput, BatchEncoding
 
@@ -24,8 +27,11 @@ class TokenizedDataset(torch.utils.data.Dataset):
     def __init__(self,
                  input_texts: List[str],
                  output_labels: Union[pd.DataFrame, torch.Tensor],
-                 tokenizer: Tokenizer_T = create_tokenizer()):
+                 tokenizer: Tokenizer_T = create_tokenizer(),
+                 use_tqdm=True):
 
+        if use_tqdm:
+            input_texts = tqdm(input_texts, desc="Tokenizing inputs")
         self._X: List[BatchEncoding] = [tokenizer(x) for x in input_texts]
 
         if isinstance(output_labels, pd.DataFrame):
@@ -44,4 +50,20 @@ class TokenizedDataset(torch.utils.data.Dataset):
 
         return X, y
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        prog='Tokenized Dataset Creator',
+        description='Takes a csv created by a scrapper and turns it into a pytorch-compatible, BERT-tokenized dataset'
+        )
+
+    parser.add_argument('--input_csv', default="../loaveandlemons_raw.csv", help="path to csv created by a scrapper")
+    parser.add_argument('--output_pkl', default="../loaveandlemons_tokenized.pkl", help="Destination to save the output")
+
+    args = parser.parse_args()
+
+    df = pd.read_csv(args.input_csv)
+    ds = TokenizedDataset(df["text"], df[["ingredients", "instructions"]])
+
+    torch.save(ds, args.output_pkl)
 

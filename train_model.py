@@ -2,6 +2,7 @@ import argparse
 
 import torch
 import pytorch_lightning as pl
+from nebulgym.data.nebuly_dataset import NebulDataset
 
 from torch.utils.data import DataLoader
 
@@ -30,7 +31,8 @@ if __name__ == "__main__":
 
     classes = ["ingredients", "instructions", "filler"]
 
-    ds: TokenizedDataset = torch.load("loaveandlemons_tokenized.pkl")
+    ds = torch.load("loaveandlemons_tokenized.pkl")
+    ds = NebulDataset(ds)
 
     train_ds, test_ds = split_dataset(ds, 0.8)
     train_ds, val_ds = split_dataset(train_ds, 0.8)

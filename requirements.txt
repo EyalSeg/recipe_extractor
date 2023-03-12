@@ -2,7 +2,6 @@ torch
 beautifulsoup4
 pandas
 tqdm
-nebulgym
 
 # pytorch-pretrained-transformers and relevant dependencies:
 sentencepiece

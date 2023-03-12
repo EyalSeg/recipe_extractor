@@ -83,6 +83,4 @@ if __name__ == "__main__":
     extracted = targets.progress_apply(extract_row, axis=1)
     df = pd.concat(list(extracted))
 
-    df["filler"] = df
-
     df.to_csv(args.output_csv)

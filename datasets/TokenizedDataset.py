@@ -8,6 +8,7 @@ import pandas as pd
 from tqdm import tqdm
 from transformers import BertTokenizer
 from transformers.tokenization_utils_base import TextInput, BatchEncoding
+from nebulgym.decorators.torch_decorators import accelerate_dataset
 
 Tokenizer_T = Callable[[TextInput], BatchEncoding]
 
@@ -23,6 +24,7 @@ def create_tokenizer(
     return closure
 
 
+@accelerate_dataset()
 class TokenizedDataset(torch.utils.data.Dataset):
     def __init__(self,
                  input_texts: List[str],

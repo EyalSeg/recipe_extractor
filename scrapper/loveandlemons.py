@@ -40,6 +40,9 @@ def extract_page(url: str, ingredients: str, instructions: str) -> pd.DataFrame:
 
     label_indicators(df, on="text", values=values)
 
+    is_filler = df["ingredients"] | df["instructions"] == 0
+    df["filler"] = is_filler.astype(float)
+
     return df
 
 
@@ -79,5 +82,7 @@ if __name__ == "__main__":
     tqdm.pandas(desc="Scrapping webpages!")
     extracted = targets.progress_apply(extract_row, axis=1)
     df = pd.concat(list(extracted))
+
+    df["filler"] = df
 
     df.to_csv(args.output_csv)

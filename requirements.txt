@@ -2,3 +2,8 @@ torch
 beautifulsoup4
 pandas
 tqdm
+
+# pytorch-pretrained-transformers and relevant dependencies:
+sentencepiece
+sacremoses
+transformers

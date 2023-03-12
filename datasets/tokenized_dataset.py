@@ -13,7 +13,7 @@ Tokenizer_T = Callable[[TextInput], BatchEncoding]
 
 
 def create_tokenizer(
-        bert_model_name: str = 'bert-base-cased', padding='max_length',  max_length=200)\
+        bert_model_name: str = 'bert-base-cased', padding='max_length',  max_length=128)\
         -> Tokenizer_T:
     tokenizer = BertTokenizer.from_pretrained(bert_model_name)
 

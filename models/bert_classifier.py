@@ -49,7 +49,7 @@ class BertClassifier(pl.LightningModule):
 
         return loss
 
-    def training_step(self, val_batch, batch_idx):
+    def validation_step(self, val_batch, batch_idx):
         loss = self._batch_loss(val_batch, self._val_acc)
 
         self.log("val_loss", loss)

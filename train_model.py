@@ -37,9 +37,10 @@ if __name__ == "__main__":
     )
 
     parser.add_argument('--dataset_file', default="loaveandlemons_tokenized.pk", help="path to the saved pytorch Dataset")
-    parser.add_argument('--batchsize', default=64)
+    parser.add_argument('--batchsize', default=64, type=int)
     parser.add_argument('--accelerator', default="cpu")
-    parser.add_argument('--epochs', default=20)
+    parser.add_argument('--epochs', default=20, type=int)
+    parser.add_argument('--output-model-path', default="model.pkl")
 
     args = parser.parse_args()
 
@@ -82,3 +83,5 @@ if __name__ == "__main__":
     trainer.fit(model, train_dl, val_dl)
 
     trainer.test(model, dataloaders=[test_dl])
+
+    torch.save(model, args.model_output_path)

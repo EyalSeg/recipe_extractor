@@ -1,27 +1,17 @@
-import requests
 import argparse
 
-from typing import List, Dict
+from typing import Dict
 from warnings import warn
 
 import pandas as pd
 
-from bs4 import BeautifulSoup
 from tqdm import tqdm
+
+from scrapper import get_div_texts_from_url
 
 
 def trim_str(string):
     return f"{string}".replace("\n", "")
-
-
-def get_div_texts_from_url(url: str) -> List[str]:
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.content, "html.parser")
-    divs = soup.find_all("div")
-    texts = [div.text.strip() for div in divs]
-
-    return [text for text in texts if text != ""]
 
 
 def label_indicators(df: pd.DataFrame, on: str, values: Dict):

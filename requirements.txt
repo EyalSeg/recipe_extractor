@@ -10,3 +10,4 @@ transformers
 
 pytorch-lightning
 nebulgym
+flask

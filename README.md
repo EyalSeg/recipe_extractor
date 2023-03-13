@@ -38,7 +38,7 @@ To start the server:
     
 To query, send a POST request to API/recipe with the url inside the body. For example:
     
-    curl -i -X POST -H 'Content-Type: application/json' -d "{\"url\": \"<YOUR URL>"}" http://<API ADDRESS>>/recipe
+    curl -i -X POST -H 'Content-Type: application/json' -d "{\"url\": \"<YOUR URL>\"}" http://<API ADDRESS>>/recipe
 
 
 

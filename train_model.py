@@ -4,7 +4,7 @@ import torch
 import pytorch_lightning as pl
 from nebulgym.data.nebuly_dataset import NebulDataset
 
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, WeightedRandomSampler
 
 from datasets.tokenized_dataset import TokenizedDataset
 from models.bert_classifier import BertClassifier
@@ -15,6 +15,20 @@ def split_dataset(dataset, ratio=0.8):
     len2 = len(dataset) - len1
 
     return torch.utils.data.random_split(dataset, [len1, len2])
+
+
+def create_balancing_sampler(dataset, batch_size):
+    y = [y for X, y in dataset]
+    y = torch.stack(y, dim=0)
+    class_counts = y.sum(dim=0).squeeze()
+
+    class_weights = 1 / class_counts
+    labels = y.argmax(dim=1)
+
+    weights = [class_weights[label] for label in labels]
+
+    sampler = WeightedRandomSampler(weights=torch.tensor(weights), num_samples=batch_size, replacement=True)
+    return sampler
 
 
 if __name__ == "__main__":
@@ -39,11 +53,16 @@ if __name__ == "__main__":
 
     assert len(train_ds) + len(val_ds) + len(test_ds) == len(ds)
 
-    to_dl = lambda ds, shuffle: DataLoader(ds, batch_size=args.batchsize, shuffle=shuffle)
+    to_dl = lambda ds, shuffle=False, rebalance=False: DataLoader(
+        ds,
+        batch_size=args.batchsize,
+        shuffle=shuffle,
+        sampler=create_balancing_sampler(ds, args.batchsize) if rebalance else None,
+    )
 
-    train_dl = to_dl(train_ds, True)
-    val_dl = to_dl(val_ds, False)
-    test_dl = to_dl(test_ds, False)
+    train_dl = to_dl(train_ds, rebalance=True)
+    val_dl = to_dl(val_ds)
+    test_dl = to_dl(test_ds)
 
     model = BertClassifier(n_labels=len(classes), lr=5e-4, dropout=0.5)
 

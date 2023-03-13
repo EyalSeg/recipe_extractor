@@ -84,4 +84,4 @@ if __name__ == "__main__":
 
     trainer.test(model, dataloaders=[test_dl])
 
-    torch.save(model, args.model_output_path)
+    torch.save(model, args.output_model_path)
